@@ -56,7 +56,11 @@ Copy trading on Polymarket allows you to automatically mirror the trades of succ
 
 <div align="center">
 
-<img width="995" height="691" alt="Polymarket Copy Trading Bot Workflow - Automated Trading Process Diagram showing trader selection, monitoring, calculation, execution, and tracking" src="https://github.com/user-attachments/assets/79715c7a-de2c-4033-81e6-b2288963ec9b" />
+<img width="1252" height="947" alt="Polymarket Copy Trading Bot Workflow - Automated Trading Process Diagram showing trader selection, monitoring, calculation, execution, and tracking" src="https://github.com/user-attachments/assets/2d1056aa-a815-4cde-914b-14a563af0533" />
+
+<img width="1337" height="980" alt="Polymarket Copy Trading Bot Workflow - Automated Trading Process Diagram showing trader selection, monitoring, calculation, execution, and tracking" src="https://github.com/user-attachments/assets/558a61b2-1db2-4ed6-ab74-2e2aa7171fdb" />
+
+<img width="1387" height="908" alt="Polymarket Copy Trading Bot Workflow - Automated Trading Process Diagram showing trader selection, monitoring, calculation, execution, and tracking" src="https://github.com/user-attachments/assets/945a2de8-2bef-49c5-be4f-e046e8556896" />
 
 </div>
 
