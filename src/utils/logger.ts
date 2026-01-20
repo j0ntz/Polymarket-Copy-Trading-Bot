@@ -143,22 +143,6 @@ class Logger {
 
     static startup(traders: string[], myWallet: string) {
         console.log('\n');
-        // // ASCII Art Logo with gradient colors
-        // console.log(chalk.cyan('  ____       _        ____                 '));
-        // console.log(chalk.cyan(' |  _ \\ ___ | |_   _ / ___|___  _ __  _   _ '));
-        // console.log(chalk.cyan.bold(" | |_) / _ \\| | | | | |   / _ \\| '_ \\| | | |"));
-        // console.log(chalk.magenta.bold(' |  __/ (_) | | |_| | |__| (_) | |_) | |_| |'));
-        // console.log(chalk.magenta(' |_|   \\___/|_|\\__, |\\____\\___/| .__/ \\__, |'));
-        // console.log(chalk.magenta('               |___/            |_|    |___/ '));
-        // console.log(chalk.gray('               Copy the best, automate success\n'));
-
-        // console.log(chalk.cyan('━'.repeat(70)));
-
-
-        // PolyCopy V3 - Modern ASCII Art Logo
-        // Pure console.log with ANSI colors - No dependencies!
-
-        // Modern color palette - Clean and professional
         const c = {
             reset: '\x1b[0m',
             bold: '\x1b[1m',
