@@ -1,10 +1,8 @@
-# Polymarket Copy Trading Bot - Trading Bot for Polymarket Prediction Markets
-
-<!-- SEO Meta Description: Best Polymarket copy trading bot for automated trading. Mirror top traders on Polymarket with intelligent position sizing, real-time execution, and 24/7 monitoring. Free open-source TypeScript trading bot for Polygon blockchain. -->
+# Polymarket Copy Trading Bot - TypeScript Implementation
 
 <div align="center">
 
-**Automated copy trading (copytrading) bot for Polymarket that mirrors trades from top performers with intelligent position sizing and real-time execution.**
+**Enterprise-grade automated copy trading bot for Polymarket prediction markets**
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
@@ -25,8 +23,11 @@
 - [Features](#-features)
 - [Quick Start](#-quick-start)
 - [Configuration](#-configuration)
+- [Architecture](#-architecture)
 - [Docker Deployment](#-docker-deployment)
 - [Documentation](#-documentation)
+- [Security](#-security)
+- [Contributing](#-contributing)
 - [Frequently Asked Questions](#-frequently-asked-questions)
 - [Advanced Version](#-advanced-version)
 - [License](#-license)
@@ -36,7 +37,7 @@
 
 ## 🎯 Overview
 
-The **Polymarket Copy Trading Bot** is the leading open-source automated trading solution for Polymarket prediction markets. This enterprise-grade trading bot automatically replicates trades from successful Polymarket traders directly to your wallet, enabling you to mirror top performers without manual intervention. The system provides continuous 24/7 monitoring, intelligent position sizing calculations, and real-time order execution with comprehensive trade tracking.
+The **Polymarket Copy Trading Bot** is a production-ready, open-source automated trading solution for Polymarket prediction markets. This TypeScript implementation provides enterprise-grade features with full type safety, comprehensive error handling, and modular architecture.
 
 ### What is Polymarket Copy Trading?
 
@@ -44,10 +45,12 @@ Copy trading on Polymarket allows you to automatically mirror the trades of succ
 
 ### Key Capabilities
 
-- **Automated Trade Replication**: Seamlessly mirrors trades from selected top-performing traders
-- **Intelligent Position Sizing**: Dynamically calculates trade sizes based on capital ratios
-- **Real-Time Execution**: Monitors and executes trades with sub-second latency
-- **Comprehensive Tracking**: Maintains complete trade history and performance analytics
+- **🤖 Automated Trade Replication**: Seamlessly mirrors trades from selected top-performing traders
+- **📊 Intelligent Position Sizing**: Dynamically calculates trade sizes based on capital ratios
+- **⚡ Real-Time Execution**: Monitors and executes trades with sub-second latency
+- **📈 Comprehensive Tracking**: Maintains complete trade history and performance analytics
+- **🔒 Security First**: Open-source codebase with local key storage and full transparency
+- **💪 Type Safety**: Full TypeScript coverage with strict type checking
 
 ---
 
@@ -55,7 +58,11 @@ Copy trading on Polymarket allows you to automatically mirror the trades of succ
 
 <div align="center">
 
-<img width="995" height="691" alt="Polymarket Copy Trading Bot Workflow - Automated Trading Process Diagram showing trader selection, monitoring, calculation, execution, and tracking" src="https://github.com/user-attachments/assets/79715c7a-de2c-4033-81e6-b2288963ec9b" />
+<img width="1252" height="947" alt="Polymarket Copy Trading Bot Workflow" src="https://github.com/user-attachments/assets/2d1056aa-a815-4cde-914b-14a563af0533" />
+
+<img width="1337" height="980" alt="Polymarket Copy Trading Bot Workflow" src="https://github.com/user-attachments/assets/558a61b2-1db2-4ed6-ab74-2e2aa7171fdb" />
+
+<img width="1387" height="908" alt="Polymarket Copy Trading Bot Workflow" src="https://github.com/user-attachments/assets/945a2de8-2bef-49c5-be4f-e046e8556896" />
 
 </div>
 
@@ -92,8 +99,6 @@ Copy trading on Polymarket allows you to automatically mirror the trades of succ
 
 ### Core Functionality
 
-This Polymarket copy trading bot provides enterprise-grade features for automated trading on Polymarket prediction markets:
-
 | Feature | Description |
 |---------|-------------|
 | **Multi-Trader Support** | Track and copy trades from multiple Polymarket traders simultaneously with independent configuration for each trader |
@@ -114,8 +119,9 @@ This Polymarket copy trading bot provides enterprise-grade features for automate
 - **Database**: MongoDB for persistent storage and analytics of all trading activity
 - **Network**: Polygon blockchain for low-cost transactions and efficient gas usage
 - **Architecture**: TypeScript-based modular design with comprehensive error handling and logging
-- **Language**: Built with TypeScript for type safety and maintainability
+- **Language**: Built with TypeScript 5.7 for type safety and maintainability
 - **Deployment**: Supports Docker deployment for easy setup and production use
+- **Type Safety**: Strict TypeScript configuration with full type coverage
 
 ---
 
@@ -135,7 +141,7 @@ Before you begin, ensure you have the following:
 ```bash
 # 1. Clone the repository
 git clone https://github.com/earthskyorg/polymarket-copy-trading-bot.git
-cd polymarket-copy-trading-bot
+cd polymarket-copy-trading-bot/TypeScript
 
 # 2. Install dependencies
 npm install
@@ -157,7 +163,6 @@ npm start
 
 ---
 
-<a id="configuration"></a>
 ## ⚙️ Configuration
 
 ### Essential Environment Variables
@@ -187,6 +192,72 @@ To identify traders worth copying, follow these steps:
 4. **Configure**: Add verified wallet addresses to `USER_ADDRESSES` in your configuration
 
 > **📖 Complete Configuration Guide**: See [Quick Start Documentation](./docs/QUICK_START.md) for detailed configuration options
+
+---
+
+## 🏗️ Architecture
+
+### Project Structure
+
+```
+TypeScript/
+├── src/
+│   ├── config/              # Configuration management
+│   │   ├── env.ts           # Environment variable validation
+│   │   ├── copyStrategy.ts  # Copy trading strategy logic
+│   │   └── db.ts            # MongoDB connection
+│   ├── services/            # Core business logic
+│   │   ├── tradeMonitor.ts  # Monitors trader activity
+│   │   ├── tradeExecutor.ts # Executes trades
+│   │   └── createClobClient.ts # CLOB client factory
+│   ├── utils/               # Utility functions
+│   │   ├── logger.ts        # Structured logging
+│   │   ├── postOrder.ts     # Order execution logic
+│   │   ├── errors.ts        # Error handling
+│   │   └── constants.ts     # Application constants
+│   ├── models/              # Database models
+│   │   └── userHistory.ts   # User activity and position models
+│   ├── interfaces/          # TypeScript interfaces
+│   │   └── User.ts          # User and trade interfaces
+│   ├── scripts/             # Utility scripts
+│   │   ├── setup.ts         # Interactive setup wizard
+│   │   ├── healthCheck.ts   # Health check utility
+│   │   └── ...              # Additional utility scripts
+│   └── index.ts             # Application entry point
+├── docs/                    # Documentation
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile               # Docker image definition
+├── tsconfig.json            # TypeScript configuration
+└── package.json             # Dependencies and scripts
+```
+
+### Design Principles
+
+- **Modular Architecture**: Clear separation of concerns with dedicated modules
+- **Type Safety**: Full TypeScript coverage with strict type checking (`strict: true`)
+- **Error Handling**: Comprehensive error handling with custom error classes and graceful degradation
+- **Logging**: Structured logging with file and console output using chalk for colors
+- **Configuration**: Environment-based configuration with validation
+- **Testing**: Unit tests for critical components using Jest
+
+### Key Components
+
+1. **Trade Monitor** (`services/tradeMonitor.ts`): Continuously monitors selected traders for new trades
+2. **Trade Executor** (`services/tradeExecutor.ts`): Executes trades based on configured strategy
+3. **Position Calculator** (`config/copyStrategy.ts`): Calculates optimal position sizes
+4. **Risk Manager**: Enforces risk limits and position sizing rules
+5. **Database Layer** (`models/userHistory.ts`): MongoDB integration for trade history and analytics
+6. **Error Handler** (`utils/errors.ts`): Custom error classes for different error types
+
+### TypeScript Configuration
+
+The project uses strict TypeScript configuration:
+
+- **Strict Mode**: All strict type-checking options enabled
+- **Target**: ES2016 for modern JavaScript features
+- **Module**: CommonJS for Node.js compatibility
+- **Source Maps**: Enabled for debugging
+- **Declaration Files**: Generated for type definitions
 
 ---
 
@@ -230,6 +301,89 @@ docker-compose logs -f bot
 - **[Multi-Trader Guide](./docs/MULTI_TRADER_GUIDE.md)** - Managing multiple traders
 - **[Tiered Multipliers](./docs/TIERED_MULTIPLIERS.md)** - Advanced position sizing configuration
 - **[Position Tracking](./docs/POSITION_TRACKING.md)** - Understanding position management
+- **[Simulation Guide](./docs/SIMULATION_GUIDE.md)** - Backtesting strategies
+- **[Simulation Quick Start](./docs/SIMULATION_QUICKSTART.md)** - Quick simulation guide
+- **[Simulation Runner Guide](./docs/SIMULATION_RUNNER_GUIDE.md)** - Complete simulation documentation
+
+---
+
+## 🔒 Security
+
+### Security Best Practices
+
+- **Private Key Storage**: Private keys are stored locally in `.env` file and never transmitted
+- **Open Source**: Full code transparency allows security audits
+- **No External Services**: All operations use official Polymarket APIs
+- **Read-Only by Default**: Bot only executes trades you explicitly configure
+- **Type Safety**: TypeScript prevents many runtime errors through compile-time checks
+
+### Security Recommendations
+
+1. **Environment Variables**: Never commit `.env` file to version control
+2. **Private Keys**: Use a dedicated trading wallet, not your main wallet
+3. **Access Control**: Restrict file permissions on `.env` file (chmod 600)
+4. **Monitoring**: Regularly review trade history and positions
+5. **Updates**: Keep dependencies up to date (`npm audit`)
+6. **Code Review**: Review all code changes before deployment
+
+### Reporting Security Issues
+
+If you discover a security vulnerability, please email security@example.com instead of using the issue tracker.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/earthskyorg/polymarket-copy-trading-bot.git
+cd polymarket-copy-trading-bot/TypeScript
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Run linter
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+
+# Run in development mode
+npm run dev
+```
+
+### Code Style
+
+- Follow TypeScript best practices
+- Use ESLint and Prettier for code formatting
+- Write tests for new features
+- Update documentation for API changes
+- Use meaningful variable and function names
+- Add JSDoc comments for public APIs
+
+### Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm start` | Start the bot (production) |
+| `npm run dev` | Start the bot in development mode |
+| `npm run build` | Build TypeScript to JavaScript |
+| `npm test` | Run tests |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Fix ESLint issues |
+| `npm run format` | Format code with Prettier |
+| `npm run setup` | Run interactive setup wizard |
+| `npm run health-check` | Verify configuration |
 
 ---
 
@@ -295,26 +449,42 @@ Yes! The bot supports:
 - Multiple trader configurations
 - Risk management rules
 
+### Why TypeScript?
+
+TypeScript provides:
+- **Type Safety**: Catch errors at compile time
+- **Better IDE Support**: Autocomplete and refactoring
+- **Maintainability**: Easier to understand and modify code
+- **Documentation**: Types serve as inline documentation
+
+---
+
 ## 🚀 Advanced Version
 
-### Version 2.0 - RTDS (Real-Time Data Stream)
+### Version 3.0 - RTDS (Real-Time Data Stream)
 
 An advanced version with **Real-Time Data Stream (RTDS)** monitoring is available as a private repository.
+
+<img width="1900" height="909" alt="Screenshot_1" src="https://github.com/user-attachments/assets/c7383d27-7331-42f7-aa55-beb1fdf08373" />
+
+<img width="1904" height="909" alt="Screenshot_2" src="https://github.com/user-attachments/assets/651bcdb5-4aeb-4885-900d-23f7b5876d5d" />
+
+<img width="1900" height="908" alt="Screenshot_3" src="https://github.com/user-attachments/assets/175969ee-af21-40b0-a9fc-73818baa9734" />
+
+<img width="1902" height="905" alt="Screenshot_4" src="https://github.com/user-attachments/assets/46b96995-dafe-48ae-8eff-30106cf8100b" />
 
 #### Enhanced Features
 
 - **Fastest Trade Detection**: Near-instantaneous trade replication
 - **Reduced Latency**: Optimized for minimal execution delay
 - **Lower API Load**: More efficient data streaming architecture
-- **Superior Performance**: Enhanced copy trading (copytrading) capabilities
+- **Superior Performance**: Enhanced copy trading capabilities
 
 ---
 
 ## 🛠️ High-Performance Rust Trading Bot
 
-A high-performance trading bot for Polymarket built with **Rust** is also available for advanced users seeking maximum performance.
-
-</div>
+A high-performance trading bot for Polymarket built with **Rust** is also available for advanced users seeking maximum performance. See the [Rust implementation](../Rust/README.md) for details.
 
 ---
 
@@ -331,6 +501,10 @@ This project is built using the following technologies and services:
 - **[Polymarket CLOB Client](https://github.com/Polymarket/clob-client)** - Official Polymarket trading client library
 - **[Predictfolio](https://predictfolio.com)** - Trader analytics and performance metrics
 - **Polygon Network** - Low-cost blockchain infrastructure for efficient trading
+- **TypeScript** - Type-safe JavaScript for better development experience
+- **MongoDB** - Document database for trade history and analytics
+
+---
 
 ## 🔍 Related Searches
 
@@ -344,6 +518,7 @@ For questions, issues, or feature requests:
 
 - **Telegram**: [@opensea712](https://t.me/opensea712)
 - **Twitter**: [@shinytechapes](https://x.com/shinytechapes)
+- **GitHub Issues**: [Open an issue](https://github.com/earthskyorg/polymarket-copy-trading-bot/issues)
 
 ---
 
@@ -351,6 +526,6 @@ For questions, issues, or feature requests:
 
 **Built with ❤️ for the Polymarket community**
 
-[⬆ Back to Top](#polymarket-copy-trading-bot)
+[⬆ Back to Top](#polymarket-copy-trading-bot---typescript-implementation)
 
 </div>
