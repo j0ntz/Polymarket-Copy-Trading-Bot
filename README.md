@@ -22,8 +22,7 @@
 - [How It Works](#-how-it-works)
 - [Features](#-features)
 - [Quick Start](#-quick-start)
-- [Configuration](#-configuration)
-- [Architecture](#-architecture)
+- [Configuration](#configuration)
 - [Docker Deployment](#-docker-deployment)
 - [Documentation](#-documentation)
 - [Security](#-security)
@@ -32,6 +31,7 @@
 - [Advanced Version](#-advanced-version)
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
+- [Support](#-support)
 
 ---
 
