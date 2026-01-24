@@ -22,7 +22,7 @@
 - [How It Works](#-how-it-works)
 - [Features](#-features)
 - [Quick Start](#-quick-start)
-- [Configuration](#-configuration)
+- [Configuration](#configuration)
 - [Docker Deployment](#-docker-deployment)
 - [Documentation](#-documentation)
 - [Security](#-security)
