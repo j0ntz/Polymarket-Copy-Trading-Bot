@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { ENV } from '../config/env';
-import getMyBalance from '../utils/getMyBalance';
 
 // Simple console colors without chalk
 const colors = {
@@ -81,27 +79,35 @@ interface SimulatedPosition {
 }
 
 const DEFAULT_TRADER_ADDRESS = '0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b';
-const TRADER_ADDRESS = (process.env.SIM_TRADER_ADDRESS || DEFAULT_TRADER_ADDRESS).toLowerCase();
-const STARTING_CAPITAL = 1000; // Simulation with $1000 starting capital
+const TRADER_ADDRESS = (process.env.SIM_TRADER_ADDRESS ?? DEFAULT_TRADER_ADDRESS).toLowerCase();
+const STARTING_CAPITAL = (() => {
+    const raw = process.env.SIM_STARTING_CAPITAL;
+    const value = raw != null ? Number(raw) : 1000;
+    return Number.isFinite(value) && value > 0 ? value : 1000;
+})(); // Simulation starting capital
 const HISTORY_DAYS = (() => {
     const raw = process.env.SIM_HISTORY_DAYS;
-    const value = raw ? Number(raw) : 7;
+    const value = raw != null ? Number(raw) : 7;
     return Number.isFinite(value) && value > 0 ? Math.floor(value) : 7;
 })();
-const MULTIPLIER = ENV.TRADE_MULTIPLIER || 1.0;
+const MULTIPLIER = (() => {
+    const raw = process.env.TRADE_MULTIPLIER;
+    const value = raw != null ? Number(raw) : 1.0;
+    return Number.isFinite(value) && value > 0 ? value : 1.0;
+})();
 const COPY_PERCENTAGE = (() => {
     const raw = process.env.COPY_PERCENTAGE;
-    const value = raw ? Number(raw) : 10.0;
+    const value = raw != null ? Number(raw) : 10.0;
     return Number.isFinite(value) && value > 0 ? value : 10.0;
 })(); // % of trader's order size to copy (default: 10%)
 const MIN_ORDER_SIZE = (() => {
     const raw = process.env.SIM_MIN_ORDER_USD;
-    const value = raw ? Number(raw) : 1.0;
+    const value = raw != null ? Number(raw) : 1.0;
     return Number.isFinite(value) && value > 0 ? value : 1.0;
 })();
 const MAX_TRADES_LIMIT = (() => {
     const raw = process.env.SIM_MAX_TRADES;
-    const value = raw ? Number(raw) : 5000;
+    const value = raw != null ? Number(raw) : 5000;
     return Number.isFinite(value) && value > 0 ? Math.floor(value) : 5000;
 })(); // Limit on number of trades for quick testing
 
