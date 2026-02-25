@@ -6,7 +6,7 @@ import { POLYMARKET_API, DB_FIELDS, TIME_CONSTANTS } from '../utils/constants';
 import { UserPositionInterface, UserActivityInterface } from '../interfaces/User';
 
 const USER_ADDRESSES = ENV.USER_ADDRESSES;
-const TOO_OLD_TIMESTAMP = ENV.TOO_OLD_TIMESTAMP;
+const TOO_OLD_HOURS = ENV.TOO_OLD_TIMESTAMP;
 const FETCH_INTERVAL = ENV.FETCH_INTERVAL;
 
 if (!USER_ADDRESSES || USER_ADDRESSES.length === 0) {
@@ -133,8 +133,9 @@ const fetchTradeData = async (): Promise<void> => {
 
             // Process each activity
             for (const activity of activities) {
-                // Skip if too old
-                if (activity.timestamp < TOO_OLD_TIMESTAMP) {
+                // Skip if too old (TOO_OLD_HOURS is in hours, activity.timestamp is unix epoch seconds)
+                const tooOldCutoff = Math.floor(Date.now() / 1000) - (TOO_OLD_HOURS * 3600);
+                if (activity.timestamp < tooOldCutoff) {
                     continue;
                 }
 
