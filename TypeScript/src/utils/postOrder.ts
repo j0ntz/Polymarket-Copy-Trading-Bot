@@ -216,6 +216,8 @@ const postOrder = async (
         let retry = 0;
         let abortDueToFunds = false;
         let totalBoughtTokens = 0; // Track total tokens bought for this trade
+        let availableBalance = my_balance;
+        const BALANCE_BUFFER_USD = 0.5;
 
         while (remaining > 0 && retry < RETRY_LIMIT) {
             const orderBook = await clobClient.getOrderBook(trade.asset);
@@ -248,8 +250,21 @@ const postOrder = async (
                 break;
             }
 
-            const maxOrderSize = parseFloat(minPriceAsk.size) * parseFloat(minPriceAsk.price);
-            const orderSize = Math.min(remaining, maxOrderSize);
+            const maxOrderSizeByBook = parseFloat(minPriceAsk.size) * parseFloat(minPriceAsk.price);
+            const safeSpendable = Math.max(0, availableBalance - BALANCE_BUFFER_USD);
+            const orderSize = Math.min(remaining, maxOrderSizeByBook, safeSpendable);
+
+            if (orderSize < MIN_ORDER_SIZE_USD) {
+                Logger.warning(
+                    `Cannot place order: capped size $${orderSize.toFixed(2)} below minimum $${MIN_ORDER_SIZE_USD.toFixed(2)} ` +
+                        `(remaining=$${remaining.toFixed(2)}, spendable=$${safeSpendable.toFixed(2)})`
+                );
+                await UserActivity.updateOne(
+                    { _id: trade._id },
+                    { [DB_FIELDS.BOT_EXECUTED]: true, [DB_FIELDS.MY_BOUGHT_SIZE]: totalBoughtTokens }
+                );
+                break;
+            }
 
             const orderArgs = {
                 side: Side.BUY,
@@ -259,23 +274,50 @@ const postOrder = async (
             };
 
             Logger.info(
-                `Creating order: $${orderSize.toFixed(2)} @ $${minPriceAsk.price} (Balance: $${my_balance.toFixed(2)})`
+                `Creating order: $${orderSize.toFixed(2)} @ $${minPriceAsk.price} ` +
+                    `(remaining=$${remaining.toFixed(2)}, spendable=$${safeSpendable.toFixed(2)}, balance=$${availableBalance.toFixed(2)})`
             );
-            // Order args logged internally
+
+            // Try strict FOK first; fallback to GTC to reduce false negatives on thin/fast books
             const signedOrder = await clobClient.createMarketOrder(orderArgs);
-            const resp = await clobClient.postOrder(signedOrder, OrderType.FOK);
+            let resp = await clobClient.postOrder(signedOrder, OrderType.FOK);
+            let usedOrderType: OrderType = OrderType.FOK;
+
+            if (resp.success !== true) {
+                const firstError = extractOrderError(resp);
+                if (!isInsufficientBalanceOrAllowanceError(firstError)) {
+                    const gtcResp = await clobClient.postOrder(signedOrder, OrderType.GTC);
+                    if (gtcResp.success === true) {
+                        resp = gtcResp;
+                        usedOrderType = OrderType.GTC;
+                    }
+                }
+            }
+
             if (resp.success === true) {
                 retry = 0;
                 const tokensBought = orderArgs.amount / orderArgs.price;
                 totalBoughtTokens += tokensBought;
+                availableBalance = Math.max(0, availableBalance - orderArgs.amount);
                 Logger.orderResult(
                     true,
-                    `Bought $${orderArgs.amount.toFixed(2)} at $${orderArgs.price} (${tokensBought.toFixed(2)} tokens)`
+                    `Bought $${orderArgs.amount.toFixed(2)} at $${orderArgs.price} (${tokensBought.toFixed(2)} tokens, type=${usedOrderType})`
                 );
                 remaining -= orderArgs.amount;
             } else {
                 const errorMessage = extractOrderError(resp);
                 if (isInsufficientBalanceOrAllowanceError(errorMessage)) {
+                    // Degrade order size once before giving up; these errors can be noisy near spend limits
+                    const reducedTarget = Math.floor((orderSize / 2) * 100) / 100;
+                    if (reducedTarget >= MIN_ORDER_SIZE_USD) {
+                        remaining = Math.min(remaining, reducedTarget);
+                        retry += 1;
+                        Logger.warning(
+                            `Order rejected (${errorMessage || 'balance/allowance'}). Retrying smaller size: $${reducedTarget.toFixed(2)} (attempt ${retry}/${RETRY_LIMIT})`
+                        );
+                        continue;
+                    }
+
                     abortDueToFunds = true;
                     Logger.warning(
                         `Order rejected: ${errorMessage || 'Insufficient balance or allowance'}`
