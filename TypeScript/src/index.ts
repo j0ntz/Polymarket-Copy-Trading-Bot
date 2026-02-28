@@ -3,6 +3,7 @@ import { ENV } from './config/env';
 import createClobClient from './utils/createClobClient';
 import tradeExecutor, { stopTradeExecutor } from './services/tradeExecutor';
 import tradeMonitor, { stopTradeMonitor } from './services/tradeMonitor';
+import positionReaper, { stopPositionReaper } from './services/positionReaper';
 import Logger from './utils/logger';
 import { performHealthCheck, logHealthCheck } from './utils/healthCheck';
 import { normalizeError, isOperationalError } from './utils/errors';
@@ -31,6 +32,7 @@ const gracefulShutdown = async (signal: string): Promise<void> => {
         // Stop services
         stopTradeMonitor();
         stopTradeExecutor();
+        stopPositionReaper();
 
         // Give services time to finish current operations
         Logger.info('Waiting for services to finish current operations...');
@@ -114,6 +116,9 @@ export const main = async (): Promise<void> => {
 
         Logger.info('Starting trade executor...');
         tradeExecutor(clobClient);
+
+        Logger.info('Starting position reaper...');
+        positionReaper(clobClient);
 
     } catch (error) {
         const normalizedError = normalizeError(error);

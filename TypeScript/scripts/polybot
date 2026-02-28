@@ -1,0 +1,68 @@
+#!/bin/bash
+# polybot — CLI wrapper for Polymarket Copy Trading Bot
+# Install: scp to /usr/local/bin/polybot && chmod +x /usr/local/bin/polybot
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" 2>/dev/null
+nvm use 20 >/dev/null 2>&1 || true
+
+REPO_DIR="/opt/Polymarket-Copy-Trading-Bot/TypeScript"
+
+case "$1" in
+  logs|l)
+    tail -f /var/log/polybot.log
+    ;;
+  logs-n)
+    LINES="${2:-100}"
+    tail -n "$LINES" /var/log/polybot.log
+    ;;
+  stats|s)
+    cd "$REPO_DIR" && npm run check-stats 2>&1
+    ;;
+  status|st)
+    if pgrep -f 'ts-node' >/dev/null 2>&1; then
+      echo "Bot running"
+      ps aux | grep '[t]s-node' | head -5
+    else
+      echo "Bot not running"
+    fi
+    ;;
+  restart|r)
+    pkill -f ts-node 2>/dev/null || true
+    sleep 1
+    cd "$REPO_DIR" && nohup npm run dev >> /var/log/polybot.log 2>&1 &
+    echo "Bot restarted (PID: $!)"
+    ;;
+  stop)
+    pkill -f ts-node 2>/dev/null && echo "Bot stopped" || echo "Bot was not running"
+    ;;
+  recent-aggregations|recent-agg)
+    LINES="${2:-5000}"
+    node "$REPO_DIR/scripts/recent_aggregations.js" "$LINES"
+    ;;
+  env)
+    echo "Current .env config (redacted):"
+    grep -E '^(USER_ADDRESSES|COPY_|MAX_|MIN_|TIERED_|PREVIEW_|TRADE_AGGREGATION)' "$REPO_DIR/.env"
+    ;;
+  log-size)
+    du -h /var/log/polybot.log
+    wc -l < /var/log/polybot.log
+    ;;
+  help|*)
+    echo "polybot — Polymarket Copy Trading Bot CLI"
+    echo ""
+    echo "Usage: polybot <command>"
+    echo ""
+    echo "Commands:"
+    echo "  logs, l              Tail live logs"
+    echo "  logs-n [N]           Show last N log lines (default 100)"
+    echo "  stats, s             Show wallet/balance stats"
+    echo "  status, st           Check if bot is running"
+    echo "  restart, r           Restart the bot"
+    echo "  stop                 Stop the bot"
+    echo "  recent-agg [lines]   Parse recent trade aggregations"
+    echo "  env                  Show trading config (redacted)"
+    echo "  log-size             Show log file size and line count"
+    echo "  help                 Show this help"
+    ;;
+esac

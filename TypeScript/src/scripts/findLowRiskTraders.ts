@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-import axios from 'axios';
 import moment from 'moment';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -9,19 +8,24 @@ dotenv.config();
 
 // Simple fetch function that doesn't require full config
 async function fetchData(url: string): Promise<any> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     try {
-        const response = await axios.get(url, {
-            timeout: 10000,
+        const response = await fetch(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             },
+            signal: controller.signal,
         });
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(`HTTP ${error.response?.status}: ${error.message}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        throw error;
+
+        return await response.json();
+    } finally {
+        clearTimeout(timeoutId);
     }
 }
 
