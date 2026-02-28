@@ -225,21 +225,9 @@ class Logger {
     private static spinnerFrames = ['⏳', '⌛', '⏳'];
     private static spinnerIndex = 0;
 
-    static waiting(traderCount: number, extraInfo?: string) {
-        // Spinner updates are useful in interactive terminals but create noisy logs in non-TTY runs.
-        if (!process.stdout.isTTY) {
-            return;
-        }
-
-        const timestamp = new Date().toLocaleTimeString();
-        const spinner = this.spinnerFrames[this.spinnerIndex % this.spinnerFrames.length];
-        this.spinnerIndex++;
-
-        const message = extraInfo
-            ? `${spinner} Waiting for trades from ${traderCount} trader(s)... (${extraInfo})`
-            : `${spinner} Waiting for trades from ${traderCount} trader(s)...`;
-
-        process.stdout.write(chalk.dim(`[${timestamp}] `) + chalk.cyan(message) + '  ');
+    static waiting(_traderCount: number, _extraInfo?: string) {
+        // Intentionally no-op to keep logs clean in daemon/server usage.
+        return;
     }
 
     static clearLine() {
