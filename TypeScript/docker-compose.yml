@@ -9,8 +9,6 @@ services:
         restart: unless-stopped
         env_file:
             - .env
-        depends_on:
-            - mongodb
         networks:
             - bot-network
         volumes:
@@ -33,8 +31,6 @@ services:
         image: mongo:7
         container_name: polymarket-mongodb
         restart: unless-stopped
-        ports:
-            - '27017:27017'
         volumes:
             - mongodb-data:/data/db
             - mongodb-config:/data/configdb
