@@ -75,24 +75,17 @@ const checkMyStats = async () => {
                 `   📈 Unrealized P&L: $${totalUnrealizedPnl.toFixed(2)} (${((totalUnrealizedPnl / totalInitialValue) * 100).toFixed(2)}%)`
             );
             console.log(`   ✅ Realized P&L: $${totalRealizedPnl.toFixed(2)}\n`);
+            // Per-position stats (all open positions, sorted by unrealized PnL)
+            console.log('   📌 Per-position stats (size + unrealized P&L):\n');
+            const sortedPositions = [...positions].sort((a, b) => (b.cashPnl || 0) - (a.cashPnl || 0));
 
-            // Top 5 positions by profit
-            console.log('   🏆 Top-5 positions by profit:\n');
-            const topPositions = [...positions]
-                .sort((a, b) => (b.percentPnl || 0) - (a.percentPnl || 0))
-                .slice(0, 5);
-
-            topPositions.forEach((pos, idx) => {
-                const pnlSign = (pos.percentPnl || 0) >= 0 ? '📈' : '📉';
-                console.log(`   ${idx + 1}. ${pnlSign} ${pos.title || 'Unknown'}`);
-                console.log(`      ${pos.outcome || 'N/A'}`);
-                console.log(
-                    `      Size: ${pos.size.toFixed(2)} tokens @ $${pos.avgPrice.toFixed(3)}`
-                );
-                console.log(
-                    `      P&L: $${(pos.cashPnl || 0).toFixed(2)} (${(pos.percentPnl || 0).toFixed(2)}%)`
-                );
-                console.log(`      Current price: $${pos.curPrice.toFixed(3)}`);
+            sortedPositions.forEach((pos, idx) => {
+                const pnl = pos.cashPnl || 0;
+                const pnlSign = pnl >= 0 ? '📈' : '📉';
+                console.log(`   ${idx + 1}. ${pnlSign} ${pos.title || 'Unknown'} — ${pos.outcome || 'N/A'}`);
+                console.log(`      Size: ${pos.size.toFixed(2)} tokens`);
+                console.log(`      Position value: $${(pos.currentValue || 0).toFixed(2)}`);
+                console.log(`      P&L: ${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)} (${(pos.percentPnl || 0).toFixed(2)}%)`);
                 if (pos.slug) {
                     console.log(`      📍 https://polymarket.com/event/${pos.slug}`);
                 }
